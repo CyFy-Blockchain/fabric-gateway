@@ -1,13 +1,15 @@
 import { DocumentBuilder } from '@nestjs/swagger';
+import { SWAGGER_TAGS } from './tags';
 
 export const swaggerConfig = new DocumentBuilder()
-  .setTitle('CyFy Blockchain API Documentation')
-  .setDescription('This documentation is for cyfy blockchain API documentation')
+  .setTitle('Fabric Gateway - CyFy Documentation')
+  .setDescription('This documentation is for Fabric Gateway documentation')
   .setVersion('1.0.0')
   .addServer('http://localhost:3000', 'Local environment')
   .addApiKey(
     { type: 'apiKey', name: 'x-api-key', in: 'header' },
     'api-gateway-key',
   )
-  .addTag('Health Check')
+  .addTag(SWAGGER_TAGS.HEALTH_CHECK)
+  .addTag(SWAGGER_TAGS.AUTH)
   .build();
