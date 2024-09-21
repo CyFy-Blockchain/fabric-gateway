@@ -3,7 +3,6 @@ import { Wallet } from 'fabric-network';
 import { CaInfo } from '../dto/caInfo.dto';
 
 const adminUserId = 'admin';
-const adminUserPasswd = 'adminpw';
 
 /**
  *
