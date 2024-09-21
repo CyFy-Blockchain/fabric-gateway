@@ -1,0 +1,1 @@
+export const HLF_CERTICATION_FORMAT = 'X.509';
