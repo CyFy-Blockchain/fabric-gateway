@@ -55,3 +55,25 @@ export class UserRemovalBody {
   @IsString()
   orgName: string;
 }
+
+export class LoginDto {
+  @ApiProperty({
+    description: 'The username of the user.',
+    example: 'JohnDoe',
+  })
+  @IsNotEmpty({ message: 'Username is required' })
+  @IsString({ message: 'Username must be a string' })
+  username: string;
+
+  @ApiProperty({
+    description: 'The password of the user.',
+    example: 'Abcd@1234',
+  })
+  @IsNotEmpty({ message: 'Password is required' })
+  @IsString({ message: 'Password must be a string' })
+  password: string;
+}
+
+export class LoginResponse {
+  userId: string;
+}
