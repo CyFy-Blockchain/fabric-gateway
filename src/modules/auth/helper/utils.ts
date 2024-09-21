@@ -22,7 +22,6 @@ const buildCAClient = async (orgName: string): Promise<FabricCAServices> => {
     caName,
   );
 
-  console.log(`Built a CA Client named ${caName}`);
   return caClient;
 };
 

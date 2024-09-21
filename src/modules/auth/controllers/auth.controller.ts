@@ -36,7 +36,7 @@ export class AuthController {
       const response = await this.authService.loginUser(data);
       return response;
     } catch (err) {
-      console.log('this is the error: ', err);
+      console.error('this is the error: ', err);
       return { error: err.message }; // this needs to be updated with a more generic approach
     }
   }
@@ -61,7 +61,7 @@ export class AuthController {
       const response = await this.authService.signupUser(data);
       return response;
     } catch (err) {
-      console.log('this is the error: ', err);
+      console.error('this is the error: ', err);
       return { error: err.message }; // this needs to be updated with a more generic approach
     }
   }
@@ -86,7 +86,7 @@ export class AuthController {
       const response = await this.authService.revokeAccount(data);
       return response;
     } catch (err) {
-      console.log('this is the error: ', err);
+      console.error('this is the error: ', err);
       return { error: err.message }; // this needs to be updated with a more generic approach
     }
   }
