@@ -1,11 +1,7 @@
 import { Metadata, ServerUnaryCall, status } from '@grpc/grpc-js';
 import { Controller } from '@nestjs/common';
 import { GrpcMethod, RpcException } from '@nestjs/microservices';
-import {
-  EnrollUserCredentials,
-  LoginDto,
-  LoginResponse,
-} from '../dto/auth.dto';
+import { UserCredentials, LoginDto, LoginResponse } from '../dto/auth.dto';
 import { DtoClass } from '../../../common/decorators/dto-class.decorator';
 import { ErrorHandler } from '../../../utils/error-handler.utils';
 
@@ -20,9 +16,9 @@ export class AuthTempController {
    * @throws RpcException - If the signup process encounters an error that is already handled.
    */
   @GrpcMethod('AuthService', 'Signup')
-  @DtoClass(EnrollUserCredentials)
+  @DtoClass(UserCredentials)
   Signup(
-    data: EnrollUserCredentials,
+    data: UserCredentials,
     metadata: Metadata,
     call: ServerUnaryCall<any, any>,
   ): boolean {
@@ -49,7 +45,7 @@ export class AuthTempController {
   @GrpcMethod('AuthService', 'Login')
   @DtoClass(LoginDto)
   Login(
-    data: EnrollUserCredentials,
+    data: UserCredentials,
     metadata: Metadata,
     call: ServerUnaryCall<any, any>,
   ): LoginResponse {

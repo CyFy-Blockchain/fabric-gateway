@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { plainToInstance } from 'class-transformer';
-import { validate, ValidationError } from 'class-validator';
+import { validate } from 'class-validator';
 import { status } from '@grpc/grpc-js';
 import { RpcException } from '@nestjs/microservices';
 import { Reflector } from '@nestjs/core';
@@ -46,7 +46,11 @@ export class ValidationInterceptor implements NestInterceptor {
         );
         throw new RpcException({
           code: status.INVALID_ARGUMENT,
-          message: `Validation failed: ${JSON.stringify(formattedErrors, null, 2)}`,
+          message: `Validation failed: ${JSON.stringify(
+            formattedErrors,
+            null,
+            2,
+          )}`,
           details: formattedErrors,
         });
       }
@@ -62,6 +66,7 @@ export class ValidationInterceptor implements NestInterceptor {
    *
    * @returns The DTO class associated with the given handler function, or `null` if no DTO class is found.
    */
+  // eslint-disable-next-line @typescript-eslint/ban-types
   private getDtoClass(handler: Function): any {
     return this.reflector.get<any>(DTO_CLASS_KEY, handler);
   }
