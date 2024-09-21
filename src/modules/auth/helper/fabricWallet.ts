@@ -7,6 +7,7 @@ import {
 } from '../dto/auth.dto';
 import { buildCAClient, fetchAdminUserFromId, fetchMspForOrg } from './utils';
 import { generateUuid } from 'src/utils/uuidGenerator';
+import { HLF_CERTICATION_FORMAT } from 'src/utils/constants';
 
 export class FabricWallet {
   private static wallet: Wallet;
@@ -23,10 +24,10 @@ export class FabricWallet {
       fs.rmSync(walletPath, { recursive: true, force: true });
 
       this.wallet = await Wallets.newFileSystemWallet(walletPath);
-      console.log(`Built a file system wallet at ${walletPath}`);
+      console.error(`Built a file system wallet at ${walletPath}`);
     } else {
       this.wallet = await Wallets.newInMemoryWallet();
-      console.log('Built an in memory wallet');
+      console.error('Built an in memory wallet');
     }
 
     return new FabricWallet();
@@ -55,7 +56,7 @@ export class FabricWallet {
         privateKey: enrollment.key.toBytes(),
       },
       mspId: msp,
-      type: 'X.509',
+      type: HLF_CERTICATION_FORMAT,
     };
     const key = generateUuid();
     await FabricWallet.wallet.put(key, x509Identity);
