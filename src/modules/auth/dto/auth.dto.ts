@@ -1,50 +1,47 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
-
-export class UserIdentity {
-  @ApiProperty()
-  credentials: {
-    certificate: string;
-    privateKey: string;
-  };
-  @ApiProperty()
-  @IsString()
-  mspId: string;
-  @ApiProperty()
-  @IsString()
-  type: string;
-}
-
+import { IsString } from 'class-validator';
 export class SignUpUserBody {
   @ApiProperty()
   @IsString()
+  adminId: string;
+
+  @ApiProperty({ example: 'hassan' })
+  @IsString()
   username: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'org1' })
   @IsString()
   orgName: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'department1' })
   @IsString()
   affiliation: string;
-
-  @ApiProperty()
-  @ValidateNested()
-  @Type(() => UserIdentity)
-  adminIdentity: UserIdentity;
 }
 
 export class UserCredentials {
-  @ApiProperty({ default: 'admin' })
+  @ApiProperty({ example: 'admin' })
   @IsString()
   username: string;
 
-  @ApiProperty({ default: 'adminpw' })
+  @ApiProperty({ example: 'adminpw' })
   @IsString()
   password: string;
 
-  @ApiProperty({ default: 'org1' })
+  @ApiProperty({ example: 'org1' })
+  @IsString()
+  orgName: string;
+}
+
+export class UserRemovalBody {
+  @ApiProperty()
+  @IsString()
+  adminId: string;
+
+  @ApiProperty({ example: 'hassan' })
+  @IsString()
+  username: string;
+
+  @ApiProperty({ example: 'org1' })
   @IsString()
   orgName: string;
 }
