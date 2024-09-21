@@ -5,8 +5,13 @@ import { CaInfo } from '../dto/caInfo.dto';
 const adminUserId = 'admin';
 
 /**
+ * Constructs a new instance of the Fabric CA Services client for a specific organization.
  *
- * @param {*} ccp
+ * @param orgName - The name of the organization for which to build the CA client.
+ *
+ * @returns A Promise that resolves to a new instance of {@link FabricCAServices} for the specified organization.
+ *
+ * @throws Will throw an error if no CA information is found for the specified organization.
  */
 const buildCAClient = async (orgName: string): Promise<FabricCAServices> => {
   const { caName, caTLSRootCerts, caUrl } = await orgToCaInfo(orgName);
@@ -21,6 +26,16 @@ const buildCAClient = async (orgName: string): Promise<FabricCAServices> => {
   return caClient;
 };
 
+/**
+ * Retrieves the Certificate Authority (CA) information for a specific organization.
+ *
+ * @param orgName - The name of the organization for which to retrieve CA information.
+ *
+ * @returns A Promise that resolves to a {@link CaInfo} object containing the CA URL, TLS root certificates, and CA name.
+ * If no CA information is found for the specified organization, the Promise will reject with an error.
+ *
+ * @throws Will throw an error if no CA information is found for the specified organization.
+ */
 async function orgToCaInfo(orgName: string): Promise<CaInfo> {
   if (orgName === 'org1')
     // XXX: Should use DB here instead
@@ -34,6 +49,15 @@ async function orgToCaInfo(orgName: string): Promise<CaInfo> {
   throw new Error(`No CA info found for org: ${orgName}`);
 }
 
+/**
+ * Retrieves the Membership Service Provider (MSP) identifier for a specific organization.
+ *
+ * @param orgName - The name of the organization for which to retrieve the MSP identifier.
+ *
+ * @returns A Promise that resolves to a string representing the MSP identifier for the specified organization.
+ *
+ * @throws Will throw an error if no MSP identifier is found for the specified organization.
+ */
 async function fetchMspForOrg(orgName: string): Promise<string> {
   if (orgName === 'org1')
     // XXX: Should use DB here instead
@@ -41,6 +65,19 @@ async function fetchMspForOrg(orgName: string): Promise<string> {
   throw new Error(`No MSP found for org: ${orgName}`);
 }
 
+/**
+ * Retrieves the admin user from the wallet for a specific organization.
+ *
+ * This function is used to authenticate with the Certificate Authority (CA) to perform administrative tasks.
+ * It retrieves the admin identity from the wallet and builds a user object for authenticating with the CA.
+ *
+ * @param id - The identifier of the admin user in the wallet.
+ * @param wallet - The wallet object containing the admin user's identity.
+ *
+ * @returns A Promise that resolves to a user object representing the admin user for the specified organization.
+ *
+ * @throws Will throw an error if the admin user with the specified ID is not found in the wallet.
+ */
 async function fetchAdminUserFromId(id: string, wallet: Wallet) {
   // Must use an admin to register a new user
   const adminIdentity = await wallet.get(id);
