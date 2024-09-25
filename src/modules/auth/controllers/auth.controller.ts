@@ -1,5 +1,10 @@
 import { Body, Controller, Post, Delete } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { SWAGGER_TAGS } from 'src/config/swagger/tags';
 import { AuthService } from '../services/auth.service';
 import {
@@ -7,6 +12,11 @@ import {
   UserCredentials,
   UserRemovalBody,
 } from '../dto/auth.dto';
+import {
+  LoginResponse,
+  RevokeUserResponse,
+  SignupResponse,
+} from '../dto/response.dto';
 
 @ApiTags(SWAGGER_TAGS.AUTH)
 @Controller()
@@ -27,13 +37,14 @@ export class AuthController {
    */
   @Post('/login')
   @ApiOperation({ summary: 'Log in to get the certificates' })
-  @ApiOkResponse({
+  @ApiResponse({
     status: 201,
     description: 'User is successfully logged in',
+    type: LoginResponse,
   })
   async loginAdmin(@Body() data: UserCredentials) {
     try {
-      const response = await this.authService.loginUser(data);
+      const response: LoginResponse = await this.authService.loginUser(data);
       return response;
     } catch (err) {
       console.error('this is the error: ', err);
@@ -56,9 +67,14 @@ export class AuthController {
    */
   @Post('/signup')
   @ApiOperation({ summary: 'Signup new users using Org Admin' })
+  @ApiResponse({
+    status: 201,
+    description: 'User is successfully signed up',
+    type: SignupResponse,
+  })
   async signup(@Body() data: SignUpUserBody) {
     try {
-      const response = await this.authService.signupUser(data);
+      const response: SignupResponse = await this.authService.signupUser(data);
       return response;
     } catch (err) {
       console.error('this is the error: ', err);
@@ -81,9 +97,15 @@ export class AuthController {
    */
   @Delete('/revoke')
   @ApiOperation({ summary: 'Delete user accounts from blockchain' })
+  @ApiOkResponse({
+    description: 'User is successfully revoked',
+    type: RevokeUserResponse,
+  })
   async revoke(@Body() data: UserRemovalBody) {
     try {
-      const response = await this.authService.revokeAccount(data);
+      const response: RevokeUserResponse = await this.authService.revokeAccount(
+        data,
+      );
       return response;
     } catch (err) {
       console.error('this is the error: ', err);
