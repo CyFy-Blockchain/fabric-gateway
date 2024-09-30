@@ -1,8 +1,4 @@
 import { DataSourceOptions } from 'typeorm';
-import { config } from 'dotenv';
-
-// Load environment variables from a .env file if necessary
-config();
 
 const isProduction =
   process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging';
@@ -14,8 +10,12 @@ export const databaseConfig: DataSourceOptions = {
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || '',
-  entities: ['dist/**/*.entity.js'],
-  migrations: ['dist/database/migrations/*.{js, ts}'],
+  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+  migrations: [
+    isProduction
+      ? 'dist/database/migrations/*.js'
+      : 'src/database/migrations/*.ts',
+  ],
   synchronize: false,
   ...(isProduction
     ? {
