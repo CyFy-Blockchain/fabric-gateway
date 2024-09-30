@@ -1,146 +1,154 @@
-# Fabric - Gateway
+# Fabric Gateway - API
 
- ## Running the project locally for development
+## Running the project locally for development
 
 Install the dependencies:
 
- ```bash
- yarn
- ```
+```bash
+npm
+```
 
- Then, run the development server:
+Then, run the development server:
 
- ```bash
- yarn start:dev
- ```
+```bash
+npm run start:dev
+```
 
- To run the production server:
+To run the production server:
 
- ```bash
- yarn build
- ```
+```bash
+npm run build
+```
 
- ```bash
- yarn start:prod
- ```
+```bash
+npm run start:prod
+```
 
- > Open [http://localhost:3000/api/v1/server-health-check](http://localhost:3000/api/v1/server-health-check) with your browser to see the result
+> Open [http://localhost:3000](http://localhost:3000) with your browser to see the result
 
- ## Migrations
+## Migrations
 
- ### To generate / run / revert a migration, make build first
+### To generate / run / revert a migration, make build first
 
- ```bash
- yarn build
- ```
+```bash
+npm run build
+```
 
- ### Create a new migration
+### Create a new migration
 
- ```bash
- TableName=<name> yarn migration:create
- ```
+```bash
+TableName=<name> npm run migration:create
+```
 
- ### Generate a migration from existing table schema <br />
+### Generate a migration from existing table schema <br />
 
- Automatic migration generation creates a new migration file and writes all sql queries that must be executed to update the database
+Automatic migration generation creates a new migration file and writes all sql queries that must be executed to update the database
 
- ```bash
- TableName=<name> yarn migration:generate
- ```
+Generate migration locally
 
- ### Run migrations <br />
+```bash
+TableName=<name> npm run local-migration:generate
+```
 
- To execute all pending migrations use following command:
+Generate migration on production
 
- To run a migration locally
+```bash
+TableName=<name> npm run prod-migration:generate
+```
 
- ```bash
- yarn local-migration:run
- ```
+### Run migrations <br />
 
- To run a migration on Production
+To execute all pending migrations use following command:
 
- ```bash
- yarn prod-migration:run
- ```
+To run a migration locally
 
- ### Revert migrations <br />
+```bash
+npm run local-migration:run
+```
 
- To revert the most recently executed migration use the following command:
+To run a migration on Production
 
- To revert a migration locally
+```bash
+npm run prod-migration:run
+```
 
- ```bash
- yarn local-migration:revert
- ```
+### Revert migrations <br />
 
- To revert a migration on Production
+To revert the most recently executed migration use the following command:
 
- ```bash
- yarn prod-migration:revert
- ```
+To revert a migration locally
 
- ### Show migrations <br />
+```bash
+npm run local-migration:revert
+```
 
- To show all migrations and whether they've been run or not use following command:
+To revert a migration on Production
 
- To show migrations locally
+```bash
+npm run prod-migration:revert
+```
 
- ```bash
- yarn local-migration:show
- ```
+### Show migrations <br />
 
- To show migrations on Production
+To show all migrations and whether they've been run or not use following command:
 
- ```bash
- yarn prod-migration:show
- ```
+To show migrations locally
 
- ### Sync database schema <br />
+```bash
+npm run local-migration:show
+```
 
- To synchronize a database schema use:
+To show migrations on Production
 
- To sync database schema locally
+```bash
+npm run prod-migration:show
+```
 
- ```bash
- yarn local-migration:schema-sync
- ```
+### Sync database schema <br />
 
- To sync database schema on Production
+To synchronize a database schema use:
 
- ```bash
- yarn prod-migration:schema-sync
- ```
+To sync database schema locally
 
- ### Log sync database schema queries without actual running them <br />
+```bash
+npm run local-migration:schema-sync
+```
 
- To check what sql queries schema:sync is going to run use:
+To sync database schema on Production
 
- To check sql queries locally:
+```bash
+npm run prod-migration:schema-sync
+```
 
- ```bash
- yarn local-migration:schema-log
- ```
+### Log sync database schema queries without actual running them <br />
 
- To check sql queries on Production:
+To check what sql queries schema:sync is going to run use:
 
- ```bash
- yarn prod-migration:schema-log
- ```
+To check sql queries locally:
 
- ### Drop database schema <br />
+```bash
+npm run local-migration:schema-log
+```
 
- To completely drop a database schema use:
+To check sql queries on Production:
 
- Drop database scehma locally
+```bash
+npm run prod-migration:schema-log
+```
 
- ```bash
- yarn local-migration:schema-drop
- ```
+### Drop database schema <br />
 
- Drop database scehma on Production
+To completely drop a database schema use:
 
- ```bash
- yarn prod-migration:schema-drop
- ```
- 
+Drop database scehma locally
+
+```bash
+npm run local-migration:schema-drop
+```
+
+Drop database scehma on Production
+
+```bash
+npm run prod-migration:schema-drop
+```
+
