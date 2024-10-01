@@ -5,7 +5,7 @@
 Install the dependencies:
 
 ```bash
-npm
+npm install
 ```
 
 Then, run the development server:
@@ -28,127 +28,48 @@ npm run start:prod
 
 ## Migrations
 
-### To generate / run / revert a migration, make build first
+### Production: To generate / run / revert a migration, make build first
 
 ```bash
 npm run build
-```
-
-### Create a new migration
-
-```bash
-TableName=<name> npm run migration:create
 ```
 
 ### Generate a migration from existing table schema <br />
 
 Automatic migration generation creates a new migration file and writes all sql queries that must be executed to update the database
 
-Generate migration locally
+Generate migration
 
 ```bash
-TableName=<name> npm run local-migration:generate
-```
-
-Generate migration on production
-
-```bash
-TableName=<name> npm run prod-migration:generate
+TableName=<name> npm run migration:generate
 ```
 
 ### Run migrations <br />
 
 To execute all pending migrations use following command:
 
-To run a migration locally
+To run a migration
 
 ```bash
-npm run local-migration:run
-```
-
-To run a migration on Production
-
-```bash
-npm run prod-migration:run
+npm run migration:run
 ```
 
 ### Revert migrations <br />
 
 To revert the most recently executed migration use the following command:
 
-To revert a migration locally
+To revert a migration
 
 ```bash
-npm run local-migration:revert
-```
-
-To revert a migration on Production
-
-```bash
-npm run prod-migration:revert
+npm run migration:revert
 ```
 
 ### Show migrations <br />
 
 To show all migrations and whether they've been run or not use following command:
 
-To show migrations locally
+To show migrations
 
 ```bash
-npm run local-migration:show
+npm run migration:show
 ```
-
-To show migrations on Production
-
-```bash
-npm run prod-migration:show
-```
-
-### Sync database schema <br />
-
-To synchronize a database schema use:
-
-To sync database schema locally
-
-```bash
-npm run local-migration:schema-sync
-```
-
-To sync database schema on Production
-
-```bash
-npm run prod-migration:schema-sync
-```
-
-### Log sync database schema queries without actual running them <br />
-
-To check what sql queries schema:sync is going to run use:
-
-To check sql queries locally:
-
-```bash
-npm run local-migration:schema-log
-```
-
-To check sql queries on Production:
-
-```bash
-npm run prod-migration:schema-log
-```
-
-### Drop database schema <br />
-
-To completely drop a database schema use:
-
-Drop database scehma locally
-
-```bash
-npm run local-migration:schema-drop
-```
-
-Drop database scehma on Production
-
-```bash
-npm run prod-migration:schema-drop
-```
-
