@@ -18,7 +18,6 @@ export class AuthService {
    * @param data.orgName - The organisation name user is a part of.
    *
    * @returns @param userId - The UUID of the authenticated user.
-   *
    * @throws Will throw an error if the user credentials are invalid.
    */
   async loginUser(data: UserCredentials) {
