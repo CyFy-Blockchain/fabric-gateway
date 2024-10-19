@@ -11,8 +11,10 @@ import {
   SignUpRequestDTO,
   LoginRequestDTO,
   UserRemovalBody,
+  EnrollRequestDTO,
 } from '../dto/auth.dto';
 import {
+  EnrollResponseDTO,
   LoginResponseDTO,
   RevokeUserResponse,
   SignupResponseDTO,
@@ -110,6 +112,25 @@ export class AuthController {
   async revoke(@Body() data: UserRemovalBody) {
     try {
       const response: RevokeUserResponse = await this.authService.revokeAccount(
+        data,
+      );
+      return response;
+    } catch (err) {
+      console.error('this is the error: ', err);
+      return { error: err.message }; // this needs to be updated with a more generic approach
+    }
+  }
+
+  @Post('/enroll')
+  @ApiOperation({ summary: 'Enroll users in HLF' })
+  @ApiResponse({
+    status: 201,
+    description: 'User is successfully enrolled up',
+    type: SignupResponseDTO,
+  })
+  async enroll(@Body() data: EnrollRequestDTO) {
+    try {
+      const response: EnrollResponseDTO = await this.authService.enrollUser(
         data,
       );
       return response;

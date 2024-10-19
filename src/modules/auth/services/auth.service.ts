@@ -3,6 +3,7 @@ import {
   SignUpRequestDTO,
   UserRemovalBody,
   LoginRequestDTO,
+  EnrollRequestDTO,
 } from '../dto/auth.dto';
 import path from 'path';
 import { FabricWallet } from '../helper/fabricWallet';
@@ -60,5 +61,11 @@ export class AuthService {
     const wallet = await FabricWallet.getInstance(walletPath);
     const response = await wallet.removeUser(data);
     return response;
+  }
+
+  async enrollUser(data: EnrollRequestDTO) {
+    const wallet = await FabricWallet.getInstance(walletPath);
+    const enrollResponse = await wallet.enrollUser(data);
+    return enrollResponse;
   }
 }
