@@ -64,3 +64,20 @@ export class UserRemovalBody {
   @IsString()
   orgName: string;
 }
+
+export class EnrollRequestDTO {
+  @ApiProperty({ example: 'hassan', required: true })
+  @IsNotEmpty({ message: 'Username is required' })
+  @IsString()
+  username: string;
+
+  @ApiProperty({ example: 'org1', required: true })
+  @IsNotEmpty({ message: 'Organization Name is required' })
+  @IsString()
+  orgName: string;
+
+  @ApiProperty({ default: 'Abcd@1234' })
+  @IsNotEmpty({ message: 'Password is required' })
+  @IsString()
+  password: string;
+}

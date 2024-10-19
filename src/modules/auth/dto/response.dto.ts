@@ -27,3 +27,11 @@ export class RevokeUserResponse {
   @ApiProperty({ example: true })
   deleted: boolean;
 }
+
+export class EnrollResponseDTO {
+  @ApiProperty({ example: 'qIUWXho' })
+  publicKey: string;
+
+  @ApiProperty({ example: 'qIUWXho' })
+  privateKey: string;
+}

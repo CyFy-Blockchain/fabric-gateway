@@ -4,11 +4,12 @@ import {
   SignUpRequestDTO,
   LoginRequestDTO,
   UserRemovalBody,
+  EnrollRequestDTO,
 } from '../dto/auth.dto';
 import { buildCAClient, fetchAdminUserFromId, fetchMspForOrg } from './utils';
 import { generateUuid } from 'src/utils';
 import { HLF_CERTICATION_FORMAT } from 'src/utils/constants';
-import { SignupResponseDTO } from '../dto/response.dto';
+import { EnrollResponseDTO, SignupResponseDTO } from '../dto/response.dto';
 
 export class FabricWallet {
   private static wallet: Wallet;
@@ -111,5 +112,18 @@ export class FabricWallet {
 
     await caClient.revoke({ enrollmentID: username }, adminUser);
     return { deleted: true };
+  }
+
+  async enrollUser(data: EnrollRequestDTO): Promise<EnrollResponseDTO> {
+    const { username, orgName, password } = data;
+    const caClient = await buildCAClient(orgName);
+    const enrollment = await caClient.enroll({
+      enrollmentID: username,
+      enrollmentSecret: password,
+    });
+    return {
+      publicKey: enrollment.certificate,
+      privateKey: enrollment.key.toBytes().replace(/\r/g, ''),
+    };
   }
 }
