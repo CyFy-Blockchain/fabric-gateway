@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import {
-  SignUpUserBody,
+  SignUpRequestDTO,
   UserRemovalBody,
-  UserCredentials,
+  LoginRequestDTO,
 } from '../dto/auth.dto';
 import path from 'path';
 import { FabricWallet } from '../helper/fabricWallet';
@@ -21,7 +21,7 @@ export class AuthService {
    *
    * @throws Will throw an error if the user credentials are invalid.
    */
-  async loginUser(data: UserCredentials) {
+  async loginUser(data: LoginRequestDTO) {
     const wallet = await FabricWallet.getInstance(walletPath);
     const userUuid = await wallet.loginUser(data);
     return { userId: userUuid };
@@ -38,10 +38,10 @@ export class AuthService {
    *
    * @returns @param password - The OTP password of the newly created user.
    */
-  async signupUser(data: SignUpUserBody) {
+  async signupUser(data: SignUpRequestDTO) {
     const wallet = await FabricWallet.getInstance(walletPath);
-    const userPassword = await wallet.signupUser(data);
-    return userPassword;
+    const signupResponse = await wallet.signupUser(data);
+    return signupResponse;
   }
 
   /**

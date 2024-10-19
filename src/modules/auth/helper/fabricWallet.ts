@@ -1,13 +1,14 @@
 import { Wallet, Wallets } from 'fabric-network';
 import fs from 'fs';
 import {
-  SignUpUserBody,
-  UserCredentials,
+  SignUpRequestDTO,
+  LoginRequestDTO,
   UserRemovalBody,
 } from '../dto/auth.dto';
 import { buildCAClient, fetchAdminUserFromId, fetchMspForOrg } from './utils';
-import { generateUuid } from 'src/utils/uuidGenerator';
+import { generateUuid } from 'src/utils';
 import { HLF_CERTICATION_FORMAT } from 'src/utils/constants';
+import { SignupResponseDTO } from '../dto/response.dto';
 
 export class FabricWallet {
   private static wallet: Wallet;
@@ -41,19 +42,13 @@ export class FabricWallet {
    * @param creds.orgName - Organisation name the user is a part of
    * @returns @param userUuid - as string containing the unique identifier for the user
    */
-  async loginUser(creds: UserCredentials) {
-    const { username, password, orgName } = creds;
+  async loginUser(creds: LoginRequestDTO) {
+    const { publicKey, privateKey, orgName } = creds;
     const msp = await fetchMspForOrg(orgName);
-    const caClient = await buildCAClient(orgName);
-
-    const enrollment = await caClient.enroll({
-      enrollmentID: username,
-      enrollmentSecret: password,
-    });
     const x509Identity = {
       credentials: {
-        certificate: enrollment.certificate,
-        privateKey: enrollment.key.toBytes(),
+        certificate: publicKey,
+        privateKey: privateKey,
       },
       mspId: msp,
       type: HLF_CERTICATION_FORMAT,
@@ -71,8 +66,8 @@ export class FabricWallet {
    * @param creds.orgName - Organisation name of the user to be a part of
    * @returns @param password - as string containing OTP for the user to login
    */
-  async signupUser(creds: SignUpUserBody) {
-    const { username, orgName, affiliation, adminId } = creds;
+  async signupUser(creds: SignUpRequestDTO): Promise<SignupResponseDTO> {
+    const { username, orgName, adminId } = creds;
     const caClient = await buildCAClient(orgName);
 
     const adminUser = await fetchAdminUserFromId(adminId, FabricWallet.wallet);
@@ -81,13 +76,23 @@ export class FabricWallet {
     // if affiliation is specified by client, the affiliation value must be configured in CA
     const secret = await caClient.register(
       {
-        affiliation: orgName + '.' + affiliation,
+        affiliation: orgName,
         enrollmentID: username,
         role: 'client',
       },
       adminUser,
     );
-    return { password: secret };
+
+    const enrollment = await caClient.enroll({
+      enrollmentID: username,
+      enrollmentSecret: secret,
+    });
+
+    return {
+      secret,
+      publicKey: enrollment.certificate,
+      privateKey: enrollment.key.toBytes().replace(/\r/g, ''),
+    };
   }
 
   /**

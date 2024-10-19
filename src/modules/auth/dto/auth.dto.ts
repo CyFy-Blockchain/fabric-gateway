@@ -1,40 +1,49 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
-export class SignUpUserBody {
-  @ApiProperty()
+export class SignUpRequestDTO {
   @IsNotEmpty({ message: 'adminId is required' })
+  @IsUUID()
   @IsString()
   adminId: string;
 
-  @ApiProperty({ example: 'hassan' })
+  @ApiProperty({ example: 'hassan', required: true })
   @IsNotEmpty({ message: 'username is required' })
   @IsString()
   username: string;
 
-  @ApiProperty({ example: 'org1' })
+  @ApiProperty({ example: 'org1', required: true })
   @IsNotEmpty({ message: 'orgName is required' })
   @IsString()
   orgName: string;
 
   @ApiProperty({ default: 'department1' })
+  @IsOptional()
   @IsString()
   affiliation: string;
 }
 
-export class UserCredentials {
-  @ApiProperty({ example: 'admin' })
-  @IsNotEmpty({ message: 'username is required' })
+export class LoginRequestDTO {
+  @ApiProperty({
+    example: 'public-key-string',
+    description: 'A public key associated with the user.',
+    required: true,
+  })
+  @IsNotEmpty({ message: 'Public key is required' })
   @IsString()
-  username: string;
+  publicKey: string;
 
-  @ApiProperty({ example: 'adminpw' })
-  @IsNotEmpty({ message: 'password is required' })
+  @ApiProperty({
+    example: 'private-key-string',
+    description: 'A private key used for signing or encryption.',
+    required: true,
+  })
+  @IsNotEmpty({ message: 'Private key is required' })
   @IsString()
-  password: string;
+  privateKey: string;
 
-  @ApiProperty({ example: 'org1' })
-  @IsNotEmpty({ message: 'orgName is required' })
+  @ApiProperty({ example: 'org1', required: true })
+  @IsNotEmpty({ message: 'Organization Name is required' })
   @IsString()
   orgName: string;
 }

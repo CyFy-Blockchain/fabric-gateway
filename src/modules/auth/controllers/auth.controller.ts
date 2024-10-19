@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Delete } from '@nestjs/common';
+import { Body, Headers, Controller, Post, Delete } from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -8,14 +8,14 @@ import {
 import { SWAGGER_TAGS } from 'src/config/swagger/tags';
 import { AuthService } from '../services/auth.service';
 import {
-  SignUpUserBody,
-  UserCredentials,
+  SignUpRequestDTO,
+  LoginRequestDTO,
   UserRemovalBody,
 } from '../dto/auth.dto';
 import {
-  LoginResponse,
+  LoginResponseDTO,
   RevokeUserResponse,
-  SignupResponse,
+  SignupResponseDTO,
 } from '../dto/response.dto';
 
 @ApiTags(SWAGGER_TAGS.AUTH)
@@ -40,15 +40,15 @@ export class AuthController {
   @ApiResponse({
     status: 201,
     description: 'User is successfully logged in',
-    type: LoginResponse,
+    type: LoginResponseDTO,
   })
-  async loginAdmin(@Body() data: UserCredentials) {
+  async loginUser(@Body() data: LoginRequestDTO) {
     try {
-      const response: LoginResponse = await this.authService.loginUser(data);
+      const response: LoginResponseDTO = await this.authService.loginUser(data);
       return response;
     } catch (err) {
       console.error('this is the error: ', err);
-      return { error: err.message }; // this needs to be updated with a more generic approach
+      return { error: err.errors }; // this needs to be updated with a more generic approach
     }
   }
 
@@ -70,11 +70,17 @@ export class AuthController {
   @ApiResponse({
     status: 201,
     description: 'User is successfully signed up',
-    type: SignupResponse,
+    type: SignupResponseDTO,
   })
-  async signup(@Body() data: SignUpUserBody) {
+  async signup(
+    @Body() data: SignUpRequestDTO,
+    @Headers('authorization') token: string,
+  ) {
     try {
-      const response: SignupResponse = await this.authService.signupUser(data);
+      const response: SignupResponseDTO = await this.authService.signupUser({
+        ...data,
+        adminId: token,
+      });
       return response;
     } catch (err) {
       console.error('this is the error: ', err);
