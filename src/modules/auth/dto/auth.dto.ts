@@ -1,5 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
+
+// Enum for roles
+export enum Role {
+  Client = 'client',
+  Admin = 'admin',
+}
 
 export class SignUpRequestDTO {
   @IsNotEmpty({ message: 'adminId is required' })
@@ -16,6 +28,11 @@ export class SignUpRequestDTO {
   @IsNotEmpty({ message: 'orgName is required' })
   @IsString()
   orgName: string;
+
+  @ApiProperty({ enum: Role, default: Role.Client })
+  @IsOptional()
+  @IsEnum(Role, { message: 'role must be either Client or Admin' })
+  role: Role = Role.Client;
 
   @ApiProperty({ default: 'department1' })
   @IsOptional()

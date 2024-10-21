@@ -68,7 +68,7 @@ export class FabricWallet {
    * @returns @param password - as string containing OTP for the user to login
    */
   async signupUser(creds: SignUpRequestDTO): Promise<SignupResponseDTO> {
-    const { username, orgName, adminId } = creds;
+    const { username, orgName, adminId, role } = creds;
     const caClient = await buildCAClient(orgName);
 
     const adminUser = await fetchAdminUserFromId(adminId, FabricWallet.wallet);
@@ -79,7 +79,27 @@ export class FabricWallet {
       {
         affiliation: orgName,
         enrollmentID: username,
-        role: 'client',
+        role,
+        attrs:
+          role === 'client'
+            ? []
+            : [
+                {
+                  name: 'hf.Registrar.Roles',
+                  value: 'client,peer,admin',
+                  ecert: true,
+                },
+                {
+                  name: 'hf.Registrar.Attributes',
+                  value: '*',
+                  ecert: true,
+                },
+                {
+                  name: 'hf.Revoker',
+                  value: 'true',
+                  ecert: true,
+                },
+              ],
       },
       adminUser,
     );
