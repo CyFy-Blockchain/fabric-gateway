@@ -81,9 +81,8 @@ export class FabricWallet {
         enrollmentID: username,
         role,
         attrs:
-          role === 'client'
-            ? []
-            : [
+          role === 'admin'
+            ? [
                 {
                   name: 'hf.Registrar.Roles',
                   value: 'client,peer,admin',
@@ -99,7 +98,8 @@ export class FabricWallet {
                   value: 'true',
                   ecert: true,
                 },
-              ],
+              ]
+            : [],
       },
       adminUser,
     );
