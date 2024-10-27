@@ -1,4 +1,4 @@
-import { Wallet, Wallets } from 'fabric-network';
+import { Gateway, GatewayOptions, Wallet, Wallets } from 'fabric-network';
 import fs from 'fs';
 import {
   SignUpRequestDTO,
@@ -10,6 +10,7 @@ import { buildCAClient, fetchAdminUserFromId, fetchMspForOrg } from './utils';
 import { generateUuid } from 'src/utils';
 import { HLF_CERTICATION_FORMAT } from 'src/utils/constants';
 import { EnrollResponseDTO, SignupResponseDTO } from '../dto/response.dto';
+import { ccp } from './ccp';
 
 export class FabricWallet {
   private static wallet: Wallet;
@@ -145,5 +146,44 @@ export class FabricWallet {
       publicKey: enrollment.certificate,
       privateKey: enrollment.key.toBytes().replace(/\r/g, ''),
     };
+  }
+
+  async callContract(
+    token: string,
+    channelName: string,
+    contractName: string,
+    functionName: string,
+    attrs: string[],
+  ) {
+    const gateway = new Gateway();
+    const gatewayOpts: GatewayOptions = {
+      identity: token,
+      wallet: FabricWallet.wallet,
+      discovery: { enabled: true, asLocalhost: true },
+    };
+
+    try {
+      await gateway.connect(ccp, gatewayOpts);
+      const network = await gateway.getNetwork(channelName);
+      const contract = network.getContract(contractName);
+
+      // Invoke the contract function
+      const evaluateTx = await contract.evaluateTransaction(
+        functionName,
+        ...attrs,
+      ); // to GET something from the contract
+      console.log(
+        'Transaction has been evaluated, result: ',
+        evaluateTx.toString(),
+      );
+      const result = await contract.submitTransaction(functionName, ...attrs); // to POST something to the contract
+      console.log(
+        'Transaction has been submitted, result: ',
+        result.toString(),
+      );
+    } catch (err) {
+      console.log('error: ', err);
+      return err;
+    }
   }
 }
