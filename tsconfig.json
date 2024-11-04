@@ -17,6 +17,18 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "@app/*": ["src/*"],
+      "@config/*": ["src/config/*"],
+      "@baseModules/*": ["src/modules/*"],
+      "@server-health-check/*": ["src/modules/server-health-check/*"],
+      "@auth/*": ["src/modules/auth/*"],
+      "@ledger/*": ["src/modules/ledger/*"],
+      "@chaincode-service-gateway/*": [
+        "src/modules/ledger/modules/chaincode-service-gateway/*"
+      ],
+      "@fee-challan/*": ["src/modules/ledger/modules/fee-challan/*"]
+    }
   }
 }

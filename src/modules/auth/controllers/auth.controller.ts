@@ -5,20 +5,23 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { SWAGGER_TAGS } from 'src/config/swagger/tags';
-import { AuthService } from '../services/auth.service';
+
+import { SWAGGER_TAGS } from '@config/swagger/tags';
+
+import { AuthService } from '@auth/services/auth.service';
 import {
   SignUpRequestDTO,
   LoginRequestDTO,
   UserRemovalBody,
   EnrollRequestDTO,
-} from '../dto/auth.dto';
+} from '@auth/dto/auth.dto';
 import {
   EnrollResponseDTO,
   LoginResponseDTO,
   RevokeUserResponse,
   SignupResponseDTO,
-} from '../dto/response.dto';
+} from '@auth/dto/response.dto';
+import { CallContractInputDto } from '@auth/dto/contract.dto';
 
 @ApiTags(SWAGGER_TAGS.AUTH)
 @Controller()
@@ -133,6 +136,24 @@ export class AuthController {
       const response: EnrollResponseDTO = await this.authService.enrollUser(
         data,
       );
+      return response;
+    } catch (err) {
+      console.error('this is the error: ', err);
+      return { error: err.message }; // this needs to be updated with a more generic approach
+    }
+  }
+  // will be removed after testing the contract flow!!!
+  @Post('/call-contract')
+  @ApiOperation({ summary: 'Call contract function deployed on HLF' })
+  @ApiResponse({
+    status: 201,
+    description: 'Function executed successfully',
+    type: SignupResponseDTO,
+  })
+  async callContract(@Body() data: CallContractInputDto) {
+    console.log('🚀 ~ AuthController ~ callContract ~ data:', data.token);
+    try {
+      const response: any = await this.authService.callContract(data);
       return response;
     } catch (err) {
       console.error('this is the error: ', err);

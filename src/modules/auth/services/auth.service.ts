@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
+
 import {
   SignUpRequestDTO,
   UserRemovalBody,
   LoginRequestDTO,
   EnrollRequestDTO,
-} from '../dto/auth.dto';
+} from '@auth/dto/auth.dto';
 import path from 'path';
-import { FabricWallet } from '../helper/fabricWallet';
+import { FabricWallet } from '@auth/helper/fabricWallet';
+import { CallContractInputDto } from '@auth/dto/contract.dto';
+
 const walletPath = path.join(__dirname, 'wallet');
 @Injectable()
 export class AuthService {
@@ -67,5 +70,12 @@ export class AuthService {
     const wallet = await FabricWallet.getInstance(walletPath);
     const enrollResponse = await wallet.enrollUser(data);
     return enrollResponse;
+  }
+
+  // will be removed after testing the contract flow!!!
+  async callContract(data: CallContractInputDto) {
+    const wallet = await FabricWallet.getInstance(walletPath);
+    const callContractResponse = await wallet.callContract(data);
+    return callContractResponse;
   }
 }
