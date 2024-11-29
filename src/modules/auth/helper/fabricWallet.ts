@@ -9,6 +9,7 @@ import {
 } from '@auth/dto/auth.dto';
 import {
   buildCAClient,
+  convertStringToObjects,
   fetchAdminUserFromId,
   fetchMspForOrg,
 } from '@auth/helper/utils';
@@ -98,6 +99,28 @@ export class FabricWallet {
 
     const adminUser = await fetchAdminUserFromId(adminId, FabricWallet.wallet);
 
+    const convertedObjects = convertStringToObjects(creds.certMetadata);
+
+    const attributesObj = [
+      {
+        name: 'hf.Registrar.Roles',
+        value: role,
+        ecert: true,
+      },
+      {
+        name: 'hf.Registrar.Attributes',
+        value:
+          creds.attr + ',hf.Registrar.Roles,hf.Registrar.Attributes,hf.Revoker',
+        ecert: true,
+      },
+      {
+        name: 'hf.Revoker',
+        value: 'true',
+        ecert: true,
+      },
+      ...convertedObjects,
+    ];
+
     // Register the user, enroll the user, and import the new identity into the wallet.
     // if affiliation is specified by client, the affiliation value must be configured in CA
     const secret = await caClient.register(
@@ -105,31 +128,7 @@ export class FabricWallet {
         affiliation: orgName,
         enrollmentID: username,
         role,
-        attrs:
-          role === 'admin'
-            ? [
-                {
-                  name: 'hf.Registrar.Roles',
-                  value: 'client,peer,admin',
-                  ecert: true,
-                },
-                {
-                  name: 'hf.Registrar.Attributes',
-                  value: '*',
-                  ecert: true,
-                },
-                {
-                  name: 'hf.Revoker',
-                  value: 'true',
-                  ecert: true,
-                },
-                {
-                  name: 'academicOfficer',
-                  value: 'true',
-                  ecert: true,
-                },
-              ]
-            : [],
+        attrs: role === 'admin' ? attributesObj : convertedObjects,
       },
       adminUser,
     );
