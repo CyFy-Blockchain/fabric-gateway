@@ -12,7 +12,7 @@ import { FeeChallanModule } from '@fee-challan/fee-challan.module';
 @Module({
   imports: [
     NestConfigModule,
-    TypeOrmModule.forRoot(databaseConfig),
+    // TypeOrmModule.forRoot(databaseConfig),
     ServerHealthCheckModule,
     AuthModule,
     FeeChallanModule,
