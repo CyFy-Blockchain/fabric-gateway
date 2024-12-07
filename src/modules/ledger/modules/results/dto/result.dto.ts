@@ -18,7 +18,7 @@ export enum FeeChallanStatus {
   Rejected = 'rejected',
 }
 
-export class Result {
+export class ResultBase {
   @IsOptional()
   @IsUUID()
   id?: string;
@@ -31,7 +31,9 @@ export class Result {
   @IsNotEmpty()
   @IsString()
   department: string;
+}
 
+export class Result extends ResultBase {
   @ApiProperty({
     example: 'A',
     description: 'Grade of the Student',
@@ -49,6 +51,35 @@ export class Result {
   @IsNotEmpty()
   @IsString()
   studentName: string;
+}
+
+export class ManageResult extends ResultBase {
+  @ApiProperty({
+    example: '1a973561-939d-4ae9-aad9-de1b80ce69f9',
+    description: 'The unique identifier for the Result',
+    required: true,
+  })
+  @IsOptional()
+  @IsUUID()
+  resultId?: string;
+
+  @ApiProperty({
+    example: '1a973561-939d-4ae9-aad9-de1b80ce69f9',
+    description: 'The unique identifier for the Admin',
+    required: true,
+  })
+  @IsOptional()
+  @IsUUID()
+  adminId?: string;
+
+  @ApiProperty({
+    example: 'acknowledge',
+    description: 'Acknoledge or Approve etc Results',
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsString()
+  action: string;
 }
 
 export class GetResultsRequestParamsDto extends LedgerRequestParamsDto {}

@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Headers, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Headers,
+  Post,
+  Body,
+  Put,
+} from '@nestjs/common';
 import {
   ApiBody,
   ApiOperation,
@@ -12,6 +20,7 @@ import { SWAGGER_TAGS } from '@config/swagger/tags';
 
 import {
   GetResultsResponseDto,
+  ManageResult,
   Result,
   ResultWorkflowDto,
   UpdateWorkflowDto,
@@ -179,6 +188,41 @@ export class ResultsController {
         contractName: contractMapper.results,
         functionName: functionName ?? 'setResultsWorkflow',
         args: [department, studentName, grade, uuidv4()],
+      };
+      const response: any = await this.chaincodeService.executeContractFunction(
+        callConractInputDto,
+      );
+      return response;
+    } catch (err) {
+      console.error('Error updating workflow:', err);
+      return { error: err.message }; // Consider using a custom error-handling mechanism
+    }
+  }
+
+  @Put('')
+  @ApiOperation({ summary: 'Manage a Result' })
+  @ApiResponse({
+    status: 201,
+    description: 'Result Updated successfully',
+    type: Result,
+  })
+  @ApiBody({
+    description: 'Manage Result details',
+    type: ManageResult, // A DTO to represent the request body structure
+  })
+  async manageResult(
+    @Headers('token') token: string,
+    @Body() manageResultDto: ManageResult,
+  ) {
+    try {
+      const functionName = this.manageResult.name;
+      const { department, adminId, resultId, action } = manageResultDto;
+      const callConractInputDto: CallContractInputDto = {
+        token,
+        channelName: contractMapper.results,
+        contractName: contractMapper.results,
+        functionName: functionName ?? 'manageResult',
+        args: [department, adminId, resultId, action],
       };
       const response: any = await this.chaincodeService.executeContractFunction(
         callConractInputDto,
