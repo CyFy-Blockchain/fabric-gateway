@@ -28,7 +28,8 @@
       "@chaincode-service-gateway/*": [
         "src/modules/ledger/modules/chaincode-service-gateway/*"
       ],
-      "@fee-challan/*": ["src/modules/ledger/modules/fee-challan/*"]
+      "@fee-challan/*": ["src/modules/ledger/modules/fee-challan/*"],
+      "@results/*": ["src/modules/ledger/modules/results/*"]
     }
   }
 }

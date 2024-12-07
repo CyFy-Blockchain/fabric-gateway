@@ -6,14 +6,14 @@ export class CallContractInputDto {
   @IsUUID()
   token: string;
 
-  @ApiProperty({
-    example: '1',
-    description: 'Name of the Organization',
-    required: true,
-  })
-  @IsNotEmpty()
-  @IsString()
-  organizationName: string;
+  // @ApiProperty({
+  //   example: '1',
+  //   description: 'Name of the Organization',
+  //   required: true,
+  // })
+  // @IsNotEmpty()
+  // @IsString()
+  // organizationName: string;
 
   @ApiProperty({
     example: 'myChannel',

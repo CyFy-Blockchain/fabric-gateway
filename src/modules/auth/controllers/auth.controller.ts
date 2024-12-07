@@ -151,7 +151,6 @@ export class AuthController {
     type: SignupResponseDTO,
   })
   async callContract(@Body() data: CallContractInputDto) {
-    console.log('🚀 ~ AuthController ~ callContract ~ data:', data.token);
     try {
       const response: any = await this.authService.callContract(data);
       return response;

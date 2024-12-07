@@ -11,7 +11,7 @@ import {
 import { ChaincodeService } from '@chaincode-service-gateway/services/chaincode-service-gateway.service';
 import { contractMapper } from '@chaincode-service-gateway/constants/contractMapper';
 
-@ApiTags(SWAGGER_TAGS.FEE_CHALLAN)
+@ApiTags(SWAGGER_TAGS.RESULTS)
 @Controller()
 export class FeeChallanController {
   constructor(private readonly chaincodeService: ChaincodeService) {}
@@ -45,12 +45,12 @@ export class FeeChallanController {
       const response: any = await this.chaincodeService.executeContractFunction(
         // need to define a general return type
         {
-          token: params.token,
-          channelName: contractMapper.feeChallan,
-          contractName: contractMapper.feeChallan,
+          token: "",
+          channelName: contractMapper.results,
+          contractName: contractMapper.results,
           functionName: functionName ?? 'getFeeChallans',
-          args: params.args,
-          organizationName: params.organization,
+          args: ["params.args"],
+          // organizationName: params.organization,
         },
       );
       return response;

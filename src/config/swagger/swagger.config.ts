@@ -5,11 +5,12 @@ export const swaggerConfig = new DocumentBuilder()
   .setTitle('Fabric Gateway - CyFy Documentation')
   .setDescription('This documentation is for Fabric Gateway documentation')
   .setVersion('1.0.0')
-  .addServer(`http://localhost:${process.env.PORT}`, 'Local environment')
+  .addServer(`http://localhost:4000`, 'Local environment')
   .addApiKey(
     { type: 'apiKey', name: 'x-api-key', in: 'header' },
     'api-gateway-key',
   )
   .addTag(SWAGGER_TAGS.HEALTH_CHECK)
   .addTag(SWAGGER_TAGS.AUTH)
+  .addTag(SWAGGER_TAGS.RESULTS)
   .build();

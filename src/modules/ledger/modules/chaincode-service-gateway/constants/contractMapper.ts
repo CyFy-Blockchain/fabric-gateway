@@ -1,3 +1,3 @@
 export const contractMapper = {
-  feeChallan: 'feeChallan',
+  results: 'results',
 };
