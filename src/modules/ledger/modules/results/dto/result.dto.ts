@@ -53,25 +53,7 @@ export class Result extends ResultBase {
   studentName: string;
 }
 
-export class ManageResult extends ResultBase {
-  @ApiProperty({
-    example: '1a973561-939d-4ae9-aad9-de1b80ce69f9',
-    description: 'The unique identifier for the Result',
-    required: true,
-  })
-  @IsOptional()
-  @IsUUID()
-  resultId?: string;
-
-  @ApiProperty({
-    example: '1a973561-939d-4ae9-aad9-de1b80ce69f9',
-    description: 'The unique identifier for the Admin',
-    required: true,
-  })
-  @IsOptional()
-  @IsUUID()
-  adminId?: string;
-
+export class ManageResult {
   @ApiProperty({
     example: 'acknowledge',
     description: 'Acknoledge or Approve etc Results',

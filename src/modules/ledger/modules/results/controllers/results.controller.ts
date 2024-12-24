@@ -199,8 +199,13 @@ export class ResultsController {
     }
   }
 
-  @Put('')
+  @Put(':id')
   @ApiOperation({ summary: 'Manage a Result' })
+  @ApiParam({
+    name: 'id',
+    description: 'The id of the result',
+    example: '1a973561-939d-4ae9-aad9-de1b80ce69f9',
+  })
   @ApiResponse({
     status: 201,
     description: 'Result Updated successfully',
@@ -212,17 +217,18 @@ export class ResultsController {
   })
   async manageResult(
     @Headers('token') token: string,
+    @Param('id') id: string,
     @Body() manageResultDto: ManageResult,
   ) {
     try {
       const functionName = this.manageResult.name;
-      const { department, adminId, resultId, action } = manageResultDto;
+      const { action } = manageResultDto;
       const callConractInputDto: CallContractInputDto = {
         token,
         channelName: contractMapper.results,
         contractName: contractMapper.results,
         functionName: functionName ?? 'manageResult',
-        args: [department, adminId, resultId, action],
+        args: ['CS', token, id, action], // CS just for now, will be replaced with mapping from database
       };
       const response: any = await this.chaincodeService.executeContractFunction(
         callConractInputDto,
