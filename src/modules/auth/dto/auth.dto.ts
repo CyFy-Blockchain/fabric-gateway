@@ -38,6 +38,16 @@ export class SignUpRequestDTO {
   @IsOptional()
   @IsString()
   affiliation: string;
+
+  @ApiProperty({ default: 'HOD,Teacher,CS' })
+  @IsOptional()
+  @IsString()
+  attr: string;
+
+  @ApiProperty({ default: 'HOD,Teacher,CS' })
+  @IsOptional()
+  @IsString()
+  certMetadata: string;
 }
 
 export class LoginRequestDTO {

@@ -1,18 +1,44 @@
-import { Wallet, Wallets } from 'fabric-network';
+import { Gateway, GatewayOptions, Wallet, Wallets } from 'fabric-network';
 import fs from 'fs';
+
 import {
   SignUpRequestDTO,
   LoginRequestDTO,
   UserRemovalBody,
   EnrollRequestDTO,
-} from '../dto/auth.dto';
-import { buildCAClient, fetchAdminUserFromId, fetchMspForOrg } from './utils';
-import { generateUuid } from 'src/utils';
-import { HLF_CERTICATION_FORMAT } from 'src/utils/constants';
-import { EnrollResponseDTO, SignupResponseDTO } from '../dto/response.dto';
+} from '@auth/dto/auth.dto';
+import {
+  buildCAClient,
+  convertStringToObjects,
+  fetchAdminUserFromId,
+  fetchMspForOrg,
+} from '@auth/helper/utils';
+import { EnrollResponseDTO, SignupResponseDTO } from '@auth/dto/response.dto';
+import { ccp } from '@auth/helper/ccp';
+import { CallContractInputDto } from '@auth/dto/contract.dto';
+
+import { generateUuid } from '@app/utils';
+import { HLF_CERTICATION_FORMAT } from '@app/utils/constants';
 
 export class FabricWallet {
   private static wallet: Wallet;
+
+  constructor() {
+    /**
+     * Initializes the FabricWallet class.
+     * This function is used to initialize the wallet instance used for managing identities.
+     * @returns The initialized wallet instance.
+     */
+    FabricWallet.wallet; // initialize wallet or inject it here if needed
+  }
+
+  /**
+   * Retrieves the wallet instance used for managing identities.
+   * @returns The wallet instance used for managing identities.
+   */
+  static getWallet() {
+    return FabricWallet.wallet;
+  }
 
   /**
    * Enables the singleton pattern to create a single Wallet instance to be used
@@ -73,6 +99,28 @@ export class FabricWallet {
 
     const adminUser = await fetchAdminUserFromId(adminId, FabricWallet.wallet);
 
+    const convertedObjects = convertStringToObjects(creds.certMetadata);
+
+    const attributesObj = [
+      {
+        name: 'hf.Registrar.Roles',
+        value: role,
+        ecert: true,
+      },
+      {
+        name: 'hf.Registrar.Attributes',
+        value:
+          creds.attr + ',hf.Registrar.Roles,hf.Registrar.Attributes,hf.Revoker',
+        ecert: true,
+      },
+      {
+        name: 'hf.Revoker',
+        value: 'true',
+        ecert: true,
+      },
+      ...convertedObjects,
+    ];
+
     // Register the user, enroll the user, and import the new identity into the wallet.
     // if affiliation is specified by client, the affiliation value must be configured in CA
     const secret = await caClient.register(
@@ -80,26 +128,7 @@ export class FabricWallet {
         affiliation: orgName,
         enrollmentID: username,
         role,
-        attrs:
-          role === 'admin'
-            ? [
-                {
-                  name: 'hf.Registrar.Roles',
-                  value: 'client,peer,admin',
-                  ecert: true,
-                },
-                {
-                  name: 'hf.Registrar.Attributes',
-                  value: '*',
-                  ecert: true,
-                },
-                {
-                  name: 'hf.Revoker',
-                  value: 'true',
-                  ecert: true,
-                },
-              ]
-            : [],
+        attrs: role === 'admin' ? attributesObj : convertedObjects,
       },
       adminUser,
     );
@@ -145,5 +174,60 @@ export class FabricWallet {
       publicKey: enrollment.certificate,
       privateKey: enrollment.key.toBytes().replace(/\r/g, ''),
     };
+  }
+
+  /**
+   * Retrieves the identity of a user from the wallet.
+   * @param token - The unique identifier for the user's identity.
+   * @returns The user's identity object, containing their credentials and MSP ID.
+   * @throws Error - If the provided token does not correspond to a valid user ID.
+   */
+  async getIdentity(token: string) {
+    const identity = await FabricWallet.wallet.get(token);
+    if (!identity) {
+      throw new Error(`Invalid User ID: ${token}`);
+    }
+    return identity;
+  }
+
+  // will be removed after testing the contract flow!!!
+  async callContract(callConractInputDto: CallContractInputDto) {
+    const { token, channelName, contractName, functionName, attrs } =
+      callConractInputDto;
+    const identity = await FabricWallet.wallet.get(token);
+    if (!identity) {
+      throw new Error(`Invalid admin ID: ${token}`);
+    }
+    const gateway = new Gateway();
+    const gatewayOpts: GatewayOptions = {
+      identity,
+      wallet: FabricWallet.wallet,
+      discovery: { enabled: true, asLocalhost: true },
+    };
+
+    try {
+      await gateway.connect(ccp, gatewayOpts);
+      const network = await gateway.getNetwork(channelName);
+      const contract = network.getContract(contractName);
+
+      // Invoke the contract function
+      const evaluateTx = await contract.evaluateTransaction(
+        functionName,
+        ...attrs,
+      ); // to GET something from the contract
+      console.log(
+        'Transaction has been evaluated, result: ',
+        evaluateTx.toString(),
+      );
+      const result = await contract.submitTransaction(functionName, ...attrs); // to POST something to the contract
+      console.log(
+        'Transaction has been submitted, result: ',
+        result.toString(),
+      );
+      return result.toString();
+    } catch (err) {
+      console.error('error: ', err);
+      return err;
+    }
   }
 }

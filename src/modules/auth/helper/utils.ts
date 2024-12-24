@@ -89,4 +89,32 @@ async function fetchAdminUserFromId(id: string, wallet: Wallet) {
   return await provider.getUserContext(adminIdentity, adminUserId);
 }
 
-export { buildCAClient, fetchMspForOrg, fetchAdminUserFromId };
+/**
+ * Converts a comma-separated string into an array of objects.
+ *
+ * This function takes a string input, splits it by commas, and transforms each
+ * resulting substring into an object with predefined properties.
+ *
+ * @param input - A comma-separated string of names.
+ *
+ * @returns An array of objects, where each object has the following properties:
+ *   - name: A string representing a name from the input.
+ *   - value: Always set to 'true'.
+ *   - ecert: Always set to true.
+ */
+const convertStringToObjects = (
+  input: string,
+): { name: string; value: string; ecert: boolean }[] => {
+  return input.split(',').map((name) => ({
+    name,
+    value: 'true',
+    ecert: true,
+  }));
+};
+
+export {
+  buildCAClient,
+  fetchMspForOrg,
+  fetchAdminUserFromId,
+  convertStringToObjects,
+};
